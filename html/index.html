@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Alfred - Document Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .main-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .form-title {
+            color: #34495e;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="time"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            height: 35px;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            height: 100px;
+            resize: vertical;
+        }
+        .radio-group {
+            margin-top: 5px;
+        }
+        .radio-group label {
+            display: inline;
+            font-weight: normal;
+            margin-right: 15px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="main-title">The Alfred</h1>
+    
+    <div class="form-container">
+        <h2 class="form-title">Engineering Controller Emergency Response Log</h2>
+        
+        <form id="documentForm">
+            <div class="form-group">
+                <label for="engineeringController">Engineering Controller:</label>
+                <input type="text" id="engineeringController" name="engineeringController" required>
+            </div>
+
+            <div class="form-group">
+                <label for="datetime">Date/Time:</label>
+                <input type="datetime-local" id="datetime" name="datetime" required>
+            </div>
+
+            <div class="form-group">
+                <label for="response">Response:</label>
+                <select id="response" name="response" required>
+                    <option value="">Select a response code</option>
+                    <option value="RED">RED</option>
+                    <option value="PURPLE">PURPLE</option>
+                    <option value="YELLOW">YELLOW</option>
+                    <option value="ORANGE">ORANGE</option>
+                    <option value="BLACK">BLACK</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="building">Building:</label>
+                <input type="text" id="building" name="building" required>
+            </div>
+
+            <div class="form-group">
+                <label for="floorArea">Floor/Area:</label>
+                <input type="text" id="floorArea" name="floorArea" required>
+            </div>
+
+            <div class="form-group">
+                <label>Was the code broadcast over the PA:</label>
+                <div class="radio-group">
+                    <input type="radio" id="paYes" name="paBroadcast" value="yes" required>
+                    <label for="paYes">Yes</label>
+                    <input type="radio" id="paNo" name="paBroadcast" value="no">
+                    <label for="paNo">No</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="comName">COM - Name:</label>
+                <input type="text" id="comName" name="comName" required>
+            </div>
+
+            <div class="form-group">
+                <label>Warden present at scene:</label>
+                <div class="radio-group">
+                    <input type="radio" id="wardenYes" name="wardenPresent" value="yes" required>
+                    <label for="wardenYes">Yes</label>
+                    <input type="radio" id="wardenNo" name="wardenPresent" value="no">
+                    <label for="wardenNo">No</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="standDown">Stand Down Time:</label>
+                <input type="time" id="standDown" name="standDown" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Generate PDF</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        document.getElementById('documentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Create new PDF document (A4 format)
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add logo/header section
+            doc.setFillColor(44, 62, 80); // Dark blue header
+            doc.rect(0, 0, 220, 40, 'F');
+            
+            // Add main title
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(255, 255, 255); // White text
+            doc.setFontSize(24);
+            doc.text('THE ALFRED', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(16);
+            doc.text('Emergency Response Log', 105, 30, { align: 'center' });
+            
+            // Reset text color to black for content
+            doc.setTextColor(0, 0, 0);
+            
+            // Add form data with better formatting
+            let yPos = 50;
+            
+            // Function to add a field with label and value
+            function addField(label, value, y) {
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(12);
+                doc.text(label, 20, y);
+                doc.setFont("helvetica", "normal");
+                doc.text(value || 'N/A', 80, y);
+                return y + 10;
+            }
+
+            // Function to add a section title
+            function addSectionTitle(title, y) {
+                doc.setFillColor(236, 240, 241); // Light gray background
+                doc.rect(15, y - 5, 180, 8, 'F');
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(12);
+                doc.text(title, 20, y);
+                return y + 10;
+            }
+
+            // Get form data
+            const formData = {
+                'Engineering Controller': document.getElementById('engineeringController').value,
+                'Date/Time': new Date(document.getElementById('datetime').value).toLocaleString(),
+                'Response Code': document.getElementById('response').value,
+                'Building': document.getElementById('building').value,
+                'Floor/Area': document.getElementById('floorArea').value,
+                'PA Broadcast': document.querySelector('input[name="paBroadcast"]:checked').value.toUpperCase(),
+                'COM - Name': document.getElementById('comName').value,
+                'Warden Present': document.querySelector('input[name="wardenPresent"]:checked').value.toUpperCase(),
+                'Stand Down Time': document.getElementById('standDown').value
+            };
+
+            // Add incident details section
+            yPos = addSectionTitle('INCIDENT DETAILS', yPos);
+            yPos = addField('Engineering Controller:', formData['Engineering Controller'], yPos);
+            yPos = addField('Date/Time:', formData['Date/Time'], yPos);
+            yPos = addField('Response Code:', formData['Response Code'], yPos);
+            yPos += 5;
+
+            // Add location section
+            yPos = addSectionTitle('LOCATION', yPos);
+            yPos = addField('Building:', formData['Building'], yPos);
+            yPos = addField('Floor/Area:', formData['Floor/Area'], yPos);
+            yPos += 5;
+
+            // Add response details section
+            yPos = addSectionTitle('RESPONSE DETAILS', yPos);
+            yPos = addField('PA Broadcast:', formData['PA Broadcast'], yPos);
+            yPos = addField('COM - Name:', formData['COM - Name'], yPos);
+            yPos = addField('Warden Present:', formData['Warden Present'], yPos);
+            yPos = addField('Stand Down Time:', formData['Stand Down Time'], yPos);
+            yPos += 5;
+
+            // Add description section
+            yPos = addSectionTitle('DESCRIPTION', yPos);
+            
+            // Handle multiline description text
+            const description = document.getElementById('description').value;
+            doc.setFont("helvetica", "normal");
+            const splitDescription = doc.splitTextToSize(description, 170);
+            doc.text(splitDescription, 20, yPos);
+
+            // Add footer
+            doc.setFontSize(10);
+            doc.setTextColor(128, 128, 128);
+            const pageWidth = doc.internal.pageSize.width;
+            doc.text(`Generated on ${new Date().toLocaleString()}`, pageWidth/2, 285, { align: 'center' });
+            
+            // Format date for filename
+            const formDate = new Date(document.getElementById('datetime').value);
+            const dateString = formDate.toISOString().split('T')[0]; // Gets YYYY-MM-DD
+            
+            // Get response code
+            const responseCode = document.getElementById('response').value;
+            
+            // Create filename: Response-[COLOR]-[DATE].pdf
+            const filename = `Response-${responseCode}-${dateString}.pdf`;
+            
+            // Save the PDF with new filename format
+            doc.save(filename);
+        });
+    </script>
+</body>
+</html>
