@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS emergency_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    engineering_controller TEXT,
+    datetime TEXT,
+    response TEXT,
+    building TEXT,
+    floor_area TEXT,
+    pa_broadcast TEXT,
+    com_name TEXT,
+    warden_present TEXT,
+    stand_down_time TEXT,
+    description TEXT
+);
+.exit
