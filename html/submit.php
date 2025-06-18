@@ -1,7 +1,7 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Database file
-    $db = new SQLite3('example.db');
+    $db = new SQLite3('alfred.db');
 
     // Check if database connection is successful
     if (!$db) {
